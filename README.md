@@ -3,7 +3,7 @@ Toy Robot Simulator
 
 Description
 -----------
-    This solution is provided using ruby and rspec. 
+This solution is provided using ruby and rspec. 
 
 
 installation
@@ -13,7 +13,7 @@ installation
     bundle install
 
 
-Example Input and Output
+general usage
 ------------------------
 
 ### Running with standard inpout / ouput
