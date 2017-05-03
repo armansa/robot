@@ -1,9 +1,9 @@
-Toy Robot Simulator
+Robot Simulator
 ===================
 
 Description
 -----------
-This solution is provided using ruby and rspec. 
+This solution is provided in ruby for REA Robot code test.
 
 
 installation
