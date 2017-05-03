@@ -1,48 +1,64 @@
 require './src/board'
 
 class Robot
+  attr_accessor :board, :column, :row, :direction
 
-  DIRECTIONS = ['NORTH', 'EAST', 'SOUTH', 'WEST']
-	DIRECTIONS_INDEX = {'NORTH'=>0, 'EAST'=>1, 'SOUTH'=>2, 'WEST'=>3}
-	DIRECTIONS_STEPS = [[0,1], [1,0], [0,-1], [-1,0]]
+	RIGHT_TURN = {'NORTH'=>'EAST', 'EAST'=>'SOUTH', 'SOUTH'=>'WEST', 'WEST'=>'NORTH'}
+	LEFT_TURN =  {'NORTH'=>'WEST', 'EAST'=>'NORTH', 'SOUTH'=>'EAST', 'WEST'=>'SOUTH'}
+  DIRECTIONS_STEPS = {
+    'NORTH' => {column: 0, row: 1},
+    'EAST'  => {column: 1, row: 0},
+    'SOUTH' => {column: 0, row: -1},
+    'WEST'  => {column: -1, row: 0}
+  }
 
-	def initialize b
-	  @board = b
+	def initialize(board:)
+	  self.board = board
 	end
+
+  def run(command:, output:)
+    case command.title
+    when 'PLACE'
+      place(column: command.column, row: command.row, direction: command.direction)
+    when 'REPORT'
+      output.puts report.join(',')
+    when 'LEFT'
+      left
+    when 'RIGHT'
+      right
+    when 'MOVE'
+      move
+    end
+  end
 
 	def placed_on_board
-	  @col && @row &&
-		DIRECTIONS_INDEX[@direction] &&
-		@board.check_boundry(@col, @row) 
+	  !self.column.nil? && !self.row.nil? && !self.direction.nil? &&
+		self.board.check_boundry(column: self.column, row: self.row)
 	end
 
-  def place c, r, d
-	  (@col, @row, @direction) = [c.to_i, r.to_i, d]
-		nil
+  def place(column:, row:, direction:)
+	  (self.column, self.row, self.direction) = [column, row, direction]
 	end
 
   def move
 	  return nil unless placed_on_board
-	  col = @col + DIRECTIONS_STEPS[DIRECTIONS_INDEX[@direction]][0]
-	  row = @row + DIRECTIONS_STEPS[DIRECTIONS_INDEX[@direction]][1]
-		(@col,@row) = [col,row] if @board.check_boundry col, row
-		nil
+	  column = self.column + DIRECTIONS_STEPS[self.direction][:column]
+	  row = self.row + DIRECTIONS_STEPS[self.direction][:row]
+		(self.column, self.row) = [column, row] if self.board.check_boundry(column: column, row: row)
 	end
 
 	def right
 	  return nil unless placed_on_board
-	  @direction = DIRECTIONS[(DIRECTIONS_INDEX[@direction]+1)%4]
-		nil
+	  self.direction = RIGHT_TURN[self.direction]
 	end
 
 	def left
 	  return nil unless placed_on_board
-	  @direction = DIRECTIONS[(DIRECTIONS_INDEX[@direction]+3)%4]
-		nil
+	  self.direction = LEFT_TURN[self.direction]
 	end
 
 	def report
 	  return nil unless placed_on_board
-	  [@col, @row, @direction]
+	  [self.column, self.row, self.direction]
 	end
 end
